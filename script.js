@@ -1,197 +1,170 @@
-// SIDEBAR DROPDOWN
-const allDropdown = document.querySelectorAll('#sidebar .side-dropdown');
+/* =========================================================
+   UI BÁSICA DO PAINEL (pt-BR) — sem Relatório / sem Chatbox
+   Páginas: Home, Solicitações, Minha Conta
+   ========================================================= */
+
+/* ---------------------------
+   DROPDOWN DO SIDEBAR (opcional)
+   Só funciona se houver .side-dropdown na página
+---------------------------- */
 const sidebar = document.getElementById('sidebar');
+const allDropdown = document.querySelectorAll('#sidebar .side-dropdown');
 
-allDropdown.forEach(item=> {
-	const a = item.parentElement.querySelector('a:first-child');
-	a.addEventListener('click', function (e) {
-		e.preventDefault();
+allDropdown.forEach(drop => {
+  const trigger = drop.parentElement.querySelector('a:first-child');
+  if (!trigger) return;
+  trigger.addEventListener('click', (e) => {
+    e.preventDefault();
 
-		if(!this.classList.contains('active')) {
-			allDropdown.forEach(i=> {
-				const aLink = i.parentElement.querySelector('a:first-child');
+    // fecha outros dropdowns abertos
+    if (!trigger.classList.contains('active')) {
+      allDropdown.forEach(d => {
+        const t = d.parentElement.querySelector('a:first-child');
+        t?.classList.remove('active');
+        d.classList.remove('show');
+      });
+    }
 
-				aLink.classList.remove('active');
-				i.classList.remove('show');
-			})
-		}
-
-		this.classList.toggle('active');
-		item.classList.toggle('show');
-	})
-})
-
-
-
+    // alterna o atual
+    trigger.classList.toggle('active');
+    drop.classList.toggle('show');
+  });
+});
 
 
-// SIDEBAR COLLAPSE
+/* ---------------------------
+   COLAPSAR / EXPANDIR SIDEBAR
+---------------------------- */
 const toggleSidebar = document.querySelector('nav .toggle-sidebar');
 const allSideDivider = document.querySelectorAll('#sidebar .divider');
 
-if(sidebar.classList.contains('hide')) {
-	allSideDivider.forEach(item=> {
-		item.textContent = '-'
-	})
-	allDropdown.forEach(item=> {
-		const a = item.parentElement.querySelector('a:first-child');
-		a.classList.remove('active');
-		item.classList.remove('show');
-	})
-} else {
-	allSideDivider.forEach(item=> {
-		item.textContent = item.dataset.text;
-	})
+// função para atualizar texto dos divisores
+function atualizarDivisores(colapsado) {
+  allSideDivider.forEach(div => {
+    if (colapsado) {
+      div.textContent = '-';
+    } else {
+      div.textContent = div.dataset.text || '';
+    }
+  });
 }
 
-toggleSidebar.addEventListener('click', function () {
-	sidebar.classList.toggle('hide');
+// estado inicial
+if (sidebar?.classList.contains('hide')) {
+  atualizarDivisores(true);
+  allDropdown.forEach(d => {
+    d.parentElement.querySelector('a:first-child')?.classList.remove('active');
+    d.classList.remove('show');
+  });
+} else {
+  atualizarDivisores(false);
+}
 
-	if(sidebar.classList.contains('hide')) {
-		allSideDivider.forEach(item=> {
-			item.textContent = '-'
-		})
+toggleSidebar?.addEventListener('click', () => {
+  sidebar?.classList.toggle('hide');
+  const colapsado = sidebar?.classList.contains('hide');
+  atualizarDivisores(colapsado);
 
-		allDropdown.forEach(item=> {
-			const a = item.parentElement.querySelector('a:first-child');
-			a.classList.remove('active');
-			item.classList.remove('show');
-		})
-	} else {
-		allSideDivider.forEach(item=> {
-			item.textContent = item.dataset.text;
-		})
-	}
-})
+  // fechando dropdowns quando colapsa
+  if (colapsado) {
+    allDropdown.forEach(d => {
+      d.parentElement.querySelector('a:first-child')?.classList.remove('active');
+      d.classList.remove('show');
+    });
+  }
+});
 
+// quando mouse sai/entra do sidebar colapsado
+sidebar?.addEventListener('mouseleave', function () {
+  if (this.classList.contains('hide')) {
+    allDropdown.forEach(d => {
+      d.parentElement.querySelector('a:first-child')?.classList.remove('active');
+      d.classList.remove('show');
+    });
+    atualizarDivisores(true);
+  }
+});
 
-
-
-sidebar.addEventListener('mouseleave', function () {
-	if(this.classList.contains('hide')) {
-		allDropdown.forEach(item=> {
-			const a = item.parentElement.querySelector('a:first-child');
-			a.classList.remove('active');
-			item.classList.remove('show');
-		})
-		allSideDivider.forEach(item=> {
-			item.textContent = '-'
-		})
-	}
-})
-
-
-
-sidebar.addEventListener('mouseenter', function () {
-	if(this.classList.contains('hide')) {
-		allDropdown.forEach(item=> {
-			const a = item.parentElement.querySelector('a:first-child');
-			a.classList.remove('active');
-			item.classList.remove('show');
-		})
-		allSideDivider.forEach(item=> {
-			item.textContent = item.dataset.text;
-		})
-	}
-})
+sidebar?.addEventListener('mouseenter', function () {
+  if (this.classList.contains('hide')) {
+    allDropdown.forEach(d => {
+      d.parentElement.querySelector('a:first-child')?.classList.remove('active');
+      d.classList.remove('show');
+    });
+    atualizarDivisores(false);
+  }
+});
 
 
-
-
-// PROFILE DROPDOWN
+/* ---------------------------
+   DROPDOWN DO PERFIL (foto → menu)
+---------------------------- */
 const profile = document.querySelector('nav .profile');
-const imgProfile = profile.querySelector('img');
-const dropdownProfile = profile.querySelector('.profile-link');
+const imgProfile = profile?.querySelector('img');
+const dropdownProfile = profile?.querySelector('.profile-link');
 
-imgProfile.addEventListener('click', function () {
-	dropdownProfile.classList.toggle('show');
-})
-
-
+imgProfile?.addEventListener('click', () => {
+  dropdownProfile?.classList.toggle('show');
+});
 
 
-// MENU
+/* ---------------------------
+   MENUS CONTEXTUAIS (três pontinhos)
+   Mantido genérico caso você use em “Solicitações”/“Minha Conta”
+---------------------------- */
 const allMenu = document.querySelectorAll('main .content-data .head .menu');
 
-allMenu.forEach(item=> {
-	const icon = item.querySelector('.icon');
-	const menuLink = item.querySelector('.menu-link');
+allMenu.forEach(box => {
+  const icon = box.querySelector('.icon');
+  const menuLink = box.querySelector('.menu-link');
+  icon?.addEventListener('click', () => {
+    menuLink?.classList.toggle('show');
+  });
+});
 
-	icon.addEventListener('click', function () {
-		menuLink.classList.toggle('show');
-	})
-})
-
-
-
-window.addEventListener('click', function (e) {
-	if(e.target !== imgProfile) {
-		if(e.target !== dropdownProfile) {
-			if(dropdownProfile.classList.contains('show')) {
-				dropdownProfile.classList.remove('show');
-			}
-		}
-	}
-
-	allMenu.forEach(item=> {
-		const icon = item.querySelector('.icon');
-		const menuLink = item.querySelector('.menu-link');
-
-		if(e.target !== icon) {
-			if(e.target !== menuLink) {
-				if (menuLink.classList.contains('show')) {
-					menuLink.classList.remove('show')
-				}
-			}
-		}
-	})
-})
+// clicar fora fecha menus e dropdown do perfil
+window.addEventListener('click', (e) => {
+  if (dropdownProfile && e.target !== imgProfile && !dropdownProfile.contains(e.target)) {
+    dropdownProfile.classList.remove('show');
+  }
+  allMenu.forEach(box => {
+    const icon = box.querySelector('.icon');
+    const menuLink = box.querySelector('.menu-link');
+    if (menuLink && e.target !== icon && !menuLink.contains(e.target)) {
+      menuLink.classList.remove('show');
+    }
+  });
+});
 
 
-
-
-
-// PROGRESSBAR
+/* ---------------------------
+   PROGRESS BAR (opcional)
+   Só aplica se houver .card .progress com data-value
+---------------------------- */
 const allProgress = document.querySelectorAll('main .card .progress');
-
-allProgress.forEach(item=> {
-	item.style.setProperty('--value', item.dataset.value)
-})
-
+allProgress.forEach(p => {
+  if (p.dataset.value) p.style.setProperty('--value', p.dataset.value);
+});
 
 
+/* ---------------------------
+   LINK ATIVO (sidebar / topbar)
+   Marca ativo com base no arquivo atual
+---------------------------- */
+(function destacarLinkAtivo() {
+  const atual = location.pathname.split('/').pop() || 'index.html';
+  const links = document.querySelectorAll('a[href]');
+  links.forEach(a => {
+    try {
+      const href = a.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+      const same = href.endsWith(atual);
+      a.classList.toggle('active', same);
+    } catch { /* ignora erros de URL */ }
+  });
+})();
 
-
-
-// APEXCHART
-var options = {
-  series: [{
-  name: 'series1',
-  data: [31, 40, 28, 51, 42, 109, 100]
-}, {
-  name: 'series2',
-  data: [11, 32, 45, 32, 34, 52, 41]
-}],
-  chart: {
-  height: 350,
-  type: 'area'
-},
-dataLabels: {
-  enabled: false
-},
-stroke: {
-  curve: 'smooth'
-},
-xaxis: {
-  type: 'datetime',
-  categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-},
-tooltip: {
-  x: {
-    format: 'dd/MM/yy HH:mm'
-  },
-},
-};
-
-var chart = new ApexCharts(document.querySelector("#chart"), options);
-chart.render();
+/* ---------------------------------------------------------
+   Removidos: código de APEXCHARTS / Relatório de Vendas
+              e qualquer lógica de Chatbox
+   --------------------------------------------------------- */
