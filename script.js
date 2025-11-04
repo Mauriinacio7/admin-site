@@ -205,7 +205,7 @@ window.addEventListener('click', (e) => {
 /* dados */ 
 // Avatar: abrir seletor e fazer preview da imagem
 
-if (avatarWrapper && avatarInput && avatarPreview) {
+/* if (avatarWrapper && avatarInput && avatarPreview) / {
   avatarButton.addEventListener('click', () => {
     avatarInput.click();
   });
