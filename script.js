@@ -1,12 +1,4 @@
-/* =========================================================
-   UI BÁSICA DO PAINEL (pt-BR) — sem Relatório / sem Chatbox
-   Páginas: Home, Solicitações, Minha Conta
-   ========================================================= */
-
-/* ---------------------------
-   DROPDOWN DO SIDEBAR (opcional)
-   Só funciona se houver .side-dropdown na página
----------------------------- */
+// SIDEBAR DROPDOWN
 const sidebar = document.getElementById('sidebar');
 const allDropdown = document.querySelectorAll('#sidebar .side-dropdown');
 
@@ -97,18 +89,6 @@ sidebar?.addEventListener('mouseenter', function () {
 
 
 /* ---------------------------
-   DROPDOWN DO PERFIL (foto → menu)
----------------------------- */
-const profile = document.querySelector('nav .profile');
-const imgProfile = profile?.querySelector('img');
-const dropdownProfile = profile?.querySelector('.profile-link');
-
-imgProfile?.addEventListener('click', () => {
-  dropdownProfile?.classList.toggle('show');
-});
-
-
-/* ---------------------------
    MENUS CONTEXTUAIS (três pontinhos)
    Mantido genérico caso você use em “Solicitações”/“Minha Conta”
 ---------------------------- */
@@ -119,20 +99,6 @@ allMenu.forEach(box => {
   const menuLink = box.querySelector('.menu-link');
   icon?.addEventListener('click', () => {
     menuLink?.classList.toggle('show');
-  });
-});
-
-// clicar fora fecha menus e dropdown do perfil
-window.addEventListener('click', (e) => {
-  if (dropdownProfile && e.target !== imgProfile && !dropdownProfile.contains(e.target)) {
-    dropdownProfile.classList.remove('show');
-  }
-  allMenu.forEach(box => {
-    const icon = box.querySelector('.icon');
-    const menuLink = box.querySelector('.menu-link');
-    if (menuLink && e.target !== icon && !menuLink.contains(e.target)) {
-      menuLink.classList.remove('show');
-    }
   });
 });
 
@@ -160,11 +126,117 @@ allProgress.forEach(p => {
       if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
       const same = href.endsWith(atual);
       a.classList.toggle('active', same);
-    } catch { /* ignora erros de URL */ }
+    } catch {
+      // ignora erros de URL
+    }
   });
 })();
 
-/* ---------------------------------------------------------
-   Removidos: código de APEXCHARTS / Relatório de Vendas
-              e qualquer lógica de Chatbox
-   --------------------------------------------------------- */
+
+/* ---------------------------
+   AVATAR + DROPDOWN DO PERFIL
+---------------------------- */
+
+// elementos do perfil
+const profile = document.querySelector('nav .profile');
+const dropdownProfile = profile?.querySelector('.profile-link');
+const avatarWrapper = document.getElementById('avatarWrapper');
+const avatarInput = document.getElementById('avatarInput');
+const avatarPreview = document.getElementById('avatarPreview');
+
+// clicar no avatar → abre seletor de imagem (não abre o menu)
+if (avatarWrapper && avatarInput && avatarPreview) {
+  avatarWrapper.addEventListener('click', (event) => {
+    // impede que o clique vá para o .profile (que abre/fecha menu)
+    event.stopPropagation();
+    avatarInput.click();
+  });
+
+  // quando selecionar uma imagem, atualiza o avatar
+  avatarInput.addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      avatarPreview.src = e.target.result;      // mostra a imagem escolhida
+      localStorage.setItem('avatarImagem', e.target.result); // persiste no navegador
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // carrega imagem salva, se existir
+  const avatarSalvo = localStorage.getItem('avatarImagem');
+  if (avatarSalvo) {
+    avatarPreview.src = avatarSalvo;
+  }
+}
+
+// clicar na área do profile (fora do avatar) → abre/fecha menu de opções
+profile?.addEventListener('click', (e) => {
+  // se clicou no avatar (ou dentro dele), não mexe no menu
+  if (e.target.closest('.avatar-wrapper')) return;
+  dropdownProfile?.classList.toggle('show');
+});
+
+
+/* ---------------------------
+   FECHAR MENUS AO CLICAR FORA
+---------------------------- */
+window.addEventListener('click', (e) => {
+  // fecha dropdown de perfil se clicar fora dele e fora da área de profile
+  if (
+    dropdownProfile &&
+    !e.target.closest('nav .profile')
+  ) {
+    dropdownProfile.classList.remove('show');
+  }
+
+  // fecha menus de três pontinhos
+  allMenu.forEach(box => {
+    const icon = box.querySelector('.icon');
+    const menuLink = box.querySelector('.menu-link');
+    if (menuLink && e.target !== icon && !menuLink.contains(e.target)) {
+      menuLink.classList.remove('show');
+    }
+  });
+});
+
+/* dados */ 
+// Avatar: abrir seletor e fazer preview da imagem
+
+if (avatarWrapper && avatarInput && avatarPreview) {
+  avatarButton.addEventListener('click', () => {
+    avatarInput.click();
+  });
+
+  avatarInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      avatarPreview.style.backgroundImage = `url(${dataUrl})`;
+
+      // opcional: guardar no navegador para manter ao recarregar
+      localStorage.setItem('cadastroAvatar', dataUrl);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // carregar avatar salvo, se existir
+  const salvo = localStorage.getItem('cadastroAvatar');
+  if (salvo) {
+    avatarPreview.style.backgroundImage = `url(${salvo})`;
+  }
+}
+
+// Só para evitar envio real do form (por enquanto)
+const form = document.querySelector('.form-dados');
+if (form) {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Dados salvos');
+  });
+}

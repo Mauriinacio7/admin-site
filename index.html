@@ -3,28 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <title>Painel • Home</title>
+  <title> SuperSonic• Home</title>
 </head>
 <body>
   <!-- SIDEBAR -->
   <section id="sidebar">
-    <a href="./index.html" class="brand"><i class='bx bxs-smile icon'></i> Painel</a>
-    <ul class="side-menu">
-      <li><a href="./index.html" class="active"><i class='bx bxs-dashboard icon'></i> Home</a></li>
-      <li class="divider" data-text="navegação">Navegação</li>
-      <li><a href="./solicitacoes.html"><i class='bx bxs-inbox icon'></i> Solicitações</a></li>
-      <li><a href="./minha-conta.html"><i class='bx bxs-user icon'></i> Minha Conta</a></li>
-    </ul>
-    <div class="ads">
-      <div class="wrapper">
-        <a class="btn-upgrade" style="pointer-events:none; opacity:.5">—</a>
-        <p style="opacity:.6">Módulos extras desativados</p>
-      </div>
+  <a href="./index.html" class="brand"><i class='bx bxs-smile icon'></i>SuperSonic</a>
+  <ul class="side-menu">
+    <li><a href="./index.html">Home</a></li>
+    <li class="divider" data-text="navegação">Navegação</li>
+
+    <li><a href="./solicitacoes.html">Solicitações</a></li>
+    <li><a href="minhaconta.html">Minha Conta</a></li>
+    <li><a href="meusdados.html">Cadastro</a></li>
+  </ul>
+
+  <div class="ads">
+    <div class="wrapper">
+      <p style="opacity:.6">Módulos extras desativados</p>
     </div>
-  </section>
-  <!-- /SIDEBAR -->
+  </div>
+</section>
+
+
+  
 
   <!-- CONTEÚDO -->
   <section id="content">
@@ -39,9 +42,9 @@
       </form>
       <span class="divider"></span>
       <div class="profile">
-        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=60" alt="Perfil" />
+        <img class="avatar" id="avatarPreview" src="" alt="Avatar">
         <ul class="profile-link">
-          <li><a href="./minha-conta.html"><i class='bx bxs-user-circle icon'></i> Perfil</a></li>
+          <li><a href="minhaconta.html"><i class='bx bxs-user-circle icon'></i> Perfil</a></li>
           <li><a href="#"><i class='bx bxs-cog'></i> Configurações</a></li>
           <li><a href="#"><i class='bx bxs-log-out-circle'></i> Sair</a></li>
         </ul>
@@ -82,7 +85,7 @@
           <span class="label">Abrir solicitações</span>
         </a>
 
-        <a class="card" href="./minha-conta.html" style="text-decoration:none;">
+        <a class="card" href="minhaconta.html" style="text-decoration:none;">
           <div class="head">
             <div>
               <h2>Minha Conta</h2>
